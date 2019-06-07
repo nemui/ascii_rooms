@@ -164,9 +164,9 @@ def generate_consecutive_room(entrance: Wall, generator: Random):
     return room
 
 
-def generate_path(room: Room):
+def generate_path(room: Room, generator: Random):
     doors_list = find_entities(DOOR_CLOSED, room)
-    the_door = random.choice(doors_list)
+    the_door = generator.choice(doors_list)
     hero = find_entities(HERO, room)[0]
     (came_from, cost_so_far) = a_star_search(room.grid, hero, the_door)
     return reconstruct_path(came_from, hero, the_door)

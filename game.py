@@ -43,7 +43,7 @@ class Game:
 
     def step(self):
         if self.hero_path is None:
-            self.hero_path = room_generator.generate_path(self.room)
+            self.hero_path = room_generator.generate_path(self.room, self.generator)
         elif len(self.hero_path) == 2:
             room_generator.open_door(self.hero_path[1], self.room)
             self.action = 'You open the door. It leads to the next room.'
