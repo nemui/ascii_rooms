@@ -13,20 +13,27 @@ class Game:
         try:
             pickle_in = open(FILENAME, 'rb')
             state = pickle.load(pickle_in)
+
+            # use saved info to continue journey inside current room
+            # remove after first run
+            if 'generator_state' in state:
+                self.generator_state = state['generator_state']
+            else:
+                self.generator_state = generator.getstate()
+
             if state['exit'] is None:
-                # use saved info to continue journey inside current room
-                if state['generator_state'] is None:
-                    self.generator_state = generator.getstate()
-                else:
-                    self.generator_state = state['generator_state']
                 generator.setstate(self.generator_state)
                 self.room = state['room']
                 self.hero_path = state['hero_path']
                 self.action = state['action']
             else:
-                self.generator_state = state['generator_state']
                 generator.setstate(self.generator_state)
-                entrance = Wall.opposite_wall(state['exit'])
+                # remove after first run
+                if type(state['exit']) == room_generator.Position:
+                    entrance = Wall.from_room_position(state['exit'], state['room'])
+                    entrance = Wall.opposite_wall(entrance)
+                else:
+                    entrance = Wall.opposite_wall(state['exit'])
                 self.room = room_generator.generate_consecutive_room(entrance, generator)
                 room_generator.place_hero_near_the_door(self.room, generator)
                 self.hero_path = None
